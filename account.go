@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/ssrdive/cidium/pkg/models"
-	"github.com/ssrdive/cidium/pkg/sql/queries"
+	"github.com/ssrdive/scribe/queries"
 	"github.com/ssrdive/mysequel"
 )
 
