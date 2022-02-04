@@ -6,9 +6,9 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/ssrdive/cidium/pkg/models"
-	"github.com/ssrdive/scribe/queries"
 	"github.com/ssrdive/mysequel"
+	"github.com/ssrdive/scribe/models"
+	"github.com/ssrdive/scribe/queries"
 )
 
 // AccountModel struct holds database instance
