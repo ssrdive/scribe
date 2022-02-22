@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/ssrdive/mysequel"
-	"github.com/ssrdive/scribe/models"
-	"github.com/ssrdive/scribe/queries"
+	"github.com/ssrdive/scribe/Models"
+	Queries "github.com/ssrdive/scribe/queries"
 )
 
 // AccountModel struct holds database instance
@@ -17,7 +17,7 @@ type AccountModel struct {
 }
 
 // IssueJournalEntries issues journal entries
-func IssueJournalEntries(tx *sql.Tx, tid int64, journalEntries []models.JournalEntry) error {
+func IssueJournalEntries(tx *sql.Tx, tid int64, journalEntries []Models.JournalEntry) error {
 	for _, entry := range journalEntries {
 		if len(entry.Debit) != 0 {
 			_, err := mysequel.Insert(mysequel.Table{
@@ -104,9 +104,9 @@ func (m *AccountModel) CreateCategory(rparams, oparams []string, form url.Values
 }
 
 // TrialBalance returns trail balance
-func (m *AccountModel) TrialBalance() ([]models.TrialEntry, error) {
-	var res []models.TrialEntry
-	err := mysequel.QueryToStructs(&res, m.DB, queries.TRIAL_BALANCE)
+func (m *AccountModel) TrialBalance() ([]Models.TrialEntry, error) {
+	var res []Models.TrialEntry
+	err := mysequel.QueryToStructs(&res, m.DB, Queries.TRIAL_BALANCE)
 	if err != nil {
 		return nil, err
 	}
@@ -115,9 +115,9 @@ func (m *AccountModel) TrialBalance() ([]models.TrialEntry, error) {
 }
 
 // ChartOfAccounts returns chart of accounts
-func (m *AccountModel) ChartOfAccounts() ([]models.ChartOfAccount, error) {
-	var res []models.ChartOfAccount
-	err := mysequel.QueryToStructs(&res, m.DB, queries.CHART_OF_ACCOUNTS)
+func (m *AccountModel) ChartOfAccounts() ([]Models.ChartOfAccount, error) {
+	var res []Models.ChartOfAccount
+	err := mysequel.QueryToStructs(&res, m.DB, Queries.CHART_OF_ACCOUNTS)
 	if err != nil {
 		return nil, err
 	}
@@ -139,7 +139,7 @@ func (m *AccountModel) PaymentVoucher(userID, postingDate, fromAccountID, amount
 		_ = tx.Commit()
 	}()
 
-	var paymentVoucher []models.PaymentVoucherEntry
+	var paymentVoucher []Models.PaymentVoucherEntry
 	json.Unmarshal([]byte(entries), &paymentVoucher)
 
 	tid, err := mysequel.Insert(mysequel.Table{
@@ -204,7 +204,7 @@ func (m *AccountModel) Deposit(userID, postingDate, toAccountID, amount, entries
 		_ = tx.Commit()
 	}()
 
-	var paymentVoucher []models.PaymentVoucherEntry
+	var paymentVoucher []Models.PaymentVoucherEntry
 	json.Unmarshal([]byte(entries), &paymentVoucher)
 
 	tid, err := mysequel.Insert(mysequel.Table{
@@ -269,7 +269,7 @@ func (m *AccountModel) JournalEntry(userID, postingDate, remark, entries string)
 		_ = tx.Commit()
 	}()
 
-	var journalEntries []models.JournalEntry
+	var journalEntries []Models.JournalEntry
 	json.Unmarshal([]byte(entries), &journalEntries)
 
 	tid, err := mysequel.Insert(mysequel.Table{
@@ -294,9 +294,9 @@ func (m *AccountModel) JournalEntry(userID, postingDate, remark, entries string)
 }
 
 // Transaction returns transaction
-func (m *AccountModel) Transaction(aid int) ([]models.Transaction, error) {
-	var res []models.Transaction
-	err := mysequel.QueryToStructs(&res, m.DB, queries.TRANSACTION, aid)
+func (m *AccountModel) Transaction(aid int) ([]Models.Transaction, error) {
+	var res []Models.Transaction
+	err := mysequel.QueryToStructs(&res, m.DB, Queries.TRANSACTION, aid)
 	if err != nil {
 		return nil, err
 	}
@@ -305,9 +305,9 @@ func (m *AccountModel) Transaction(aid int) ([]models.Transaction, error) {
 }
 
 // Ledger returns account ledger
-func (m *AccountModel) Ledger(aid int) ([]models.LedgerEntry, error) {
-	var res []models.LedgerEntry
-	err := mysequel.QueryToStructs(&res, m.DB, queries.ACCOUNT_LEDGER, aid)
+func (m *AccountModel) Ledger(aid int) ([]Models.LedgerEntry, error) {
+	var res []Models.LedgerEntry
+	err := mysequel.QueryToStructs(&res, m.DB, Queries.ACCOUNT_LEDGER, aid)
 	if err != nil {
 		return nil, err
 	}
@@ -316,9 +316,9 @@ func (m *AccountModel) Ledger(aid int) ([]models.LedgerEntry, error) {
 }
 
 // PaymentVouchers returns payment vouchers
-func (m *AccountModel) PaymentVouchers() ([]models.PaymentVoucherList, error) {
-	var res []models.PaymentVoucherList
-	err := mysequel.QueryToStructs(&res, m.DB, queries.PAYMENT_VOUCHERS)
+func (m *AccountModel) PaymentVouchers() ([]Models.PaymentVoucherList, error) {
+	var res []Models.PaymentVoucherList
+	err := mysequel.QueryToStructs(&res, m.DB, Queries.PAYMENT_VOUCHERS)
 	if err != nil {
 		return nil, err
 	}
@@ -327,15 +327,15 @@ func (m *AccountModel) PaymentVouchers() ([]models.PaymentVoucherList, error) {
 }
 
 // PaymentVoucherDetails returns payment voucher details
-func (m *AccountModel) PaymentVoucherDetails(pid int) (models.PaymentVoucherSummary, error) {
+func (m *AccountModel) PaymentVoucherDetails(pid int) (Models.PaymentVoucherSummary, error) {
 	var dueDate, checkNumber, payee, remark, account, datetime sql.NullString
-	err := m.DB.QueryRow(queries.PAYMENT_VOUCHER_CHECK_DETAILS, pid).Scan(&dueDate, &checkNumber, &payee, &remark, &account, &datetime)
+	err := m.DB.QueryRow(Queries.PAYMENT_VOUCHER_CHECK_DETAILS, pid).Scan(&dueDate, &checkNumber, &payee, &remark, &account, &datetime)
 
-	var vouchers []models.PaymentVoucherDetails
-	err = mysequel.QueryToStructs(&vouchers, m.DB, queries.PAYMENT_VOUCHER_DETAILS, pid)
+	var vouchers []Models.PaymentVoucherDetails
+	err = mysequel.QueryToStructs(&vouchers, m.DB, Queries.PAYMENT_VOUCHER_DETAILS, pid)
 	if err != nil {
-		return models.PaymentVoucherSummary{}, err
+		return Models.PaymentVoucherSummary{}, err
 	}
 
-	return models.PaymentVoucherSummary{DueDate: dueDate, CheckNumber: checkNumber, Payee: payee, Remark: remark, Account: account, Datetime: datetime, PaymentVoucherDetails: vouchers}, nil
+	return Models.PaymentVoucherSummary{DueDate: dueDate, CheckNumber: checkNumber, Payee: payee, Remark: remark, Account: account, Datetime: datetime, PaymentVoucherDetails: vouchers}, nil
 }

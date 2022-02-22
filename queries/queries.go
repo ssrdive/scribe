@@ -1,4 +1,4 @@
-package queries
+package Queries
 
 const TRIAL_BALANCE = `
 	SELECT A.id, A.account_id, A.name, COALESCE(AT.debit, 0) AS debit, COALESCE(AT.credit, 0) AS credit, COALESCE(AT.debit-AT.credit, 0) AS balance
