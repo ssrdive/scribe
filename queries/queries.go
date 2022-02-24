@@ -61,3 +61,13 @@ const PAYMENT_VOUCHER_DETAILS = `
 	LEFT JOIN account A ON A.id = AT.account_id
 	WHERE PV.id = ?
 `
+
+const JOURNAL_ENTRIES_FOR_AUDIT = `
+	SELECT T.datetime, U.name AS issuer, A.name AS account, AT.type, T.posting_date, AT.amount,  T.remark
+	FROM transaction T
+	LEFT JOIN account_transaction AT ON AT.transaction_id = T.id
+	LEFT JOIN user U ON T.user_id = U.id
+	LEFT JOIN account A ON A.id = AT.account_id
+	WHERE (? IS NULL OR DATE(T.datetime) = ?) AND (? IS NULL OR T.posting_date = ?)
+	ORDER BY AT.transaction_id, T.datetime
+`

@@ -339,3 +339,31 @@ func (m *AccountModel) PaymentVoucherDetails(pid int) (models.PaymentVoucherSumm
 
 	return models.PaymentVoucherSummary{DueDate: dueDate, CheckNumber: checkNumber, Payee: payee, Remark: remark, Account: account, Datetime: datetime, PaymentVoucherDetails: vouchers}, nil
 }
+
+func (m *AccountModel) JournalEntriesForAudit(date, posting_date string) ([]models.JEsForAudit, error) {
+	var d, p_date sql.NullString
+	if date == "" {
+		d = sql.NullString{}
+	} else {
+		d = sql.NullString{
+			Valid:  true,
+			String: date,
+		}
+	}
+	if posting_date == "" {
+		p_date = sql.NullString{}
+	} else {
+		p_date = sql.NullString{
+			Valid:  true,
+			String: posting_date,
+		}
+	}
+
+	var res []models.JEsForAudit
+	err := mysequel.QueryToStructs(&res, m.DB, queries.JOURNAL_ENTRIES_FOR_AUDIT, d, d, p_date, p_date)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
