@@ -80,11 +80,12 @@ type PaymentVoucherDetails struct {
 }
 
 type JEsForAudit struct {
-	Datetime    string  `json:"datetime"`
-	Issuer      string  `json:"issuer"`
-	Account     string  `json:"account"`
-	Type        string  `json:"type"`
-	PostingDate string  `json:"posting_date"`
-	Amount      float64 `json:"amount"`
-	Remark      string  `json:"remark"`
+	Datetime      string  `json:"datetime"`
+	Issuer        string  `json:"issuer"`
+	Account       string  `json:"account"`
+	TransactionID int     `json:"transaction_id"`
+	Type          string  `json:"type"`
+	PostingDate   string  `json:"posting_date"`
+	Amount        float64 `json:"amount"`
+	Remark        string  `json:"remark"`
 }

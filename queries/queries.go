@@ -63,7 +63,7 @@ const PAYMENT_VOUCHER_DETAILS = `
 `
 
 const JOURNAL_ENTRIES_FOR_AUDIT = `
-	SELECT T.datetime, U.name AS issuer, A.name AS account, AT.type, T.posting_date, AT.amount,  T.remark
+	SELECT T.datetime, U.name AS issuer, AT.transaction_id, A.name AS account, AT.type, T.posting_date, AT.amount,  T.remark
 	FROM transaction T
 	LEFT JOIN account_transaction AT ON AT.transaction_id = T.id
 	LEFT JOIN user U ON T.user_id = U.id
