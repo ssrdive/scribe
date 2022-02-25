@@ -69,5 +69,5 @@ const JOURNAL_ENTRIES_FOR_AUDIT = `
 	LEFT JOIN user U ON T.user_id = U.id
 	LEFT JOIN account A ON A.id = AT.account_id
 	WHERE (? IS NULL OR DATE(T.datetime) = ?) AND (? IS NULL OR T.posting_date = ?)
-	ORDER BY AT.transaction_id, T.datetime
+	ORDER BY T.datetime, AT.transaction_id, AT.type DESC, AT.amount ASC
 `
