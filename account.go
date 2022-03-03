@@ -3,6 +3,7 @@ package scribe
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"net/url"
 	"time"
 
@@ -14,6 +15,51 @@ import (
 // AccountModel struct holds database instance
 type AccountModel struct {
 	DB *sql.DB
+}
+
+func validatePostingDate(postingDate string) error {
+	now := time.Now()
+
+	var m time.Month
+	year, m, _ := now.Date()
+	month := int(m)
+
+	var oldestDate time.Time
+	if month < 4 {
+		oldestDate = time.Date(year-1, 4, 1, 0, 0, 0, 0, time.UTC)
+	} else {
+		oldestDate = time.Date(year, 4, 1, 0, 0, 0, 0, time.UTC)
+	}
+
+	parsedDate, err := time.Parse("2006-01-02", postingDate)
+	if err != nil {
+		return errors.New("invalid posting date")
+	}
+
+	if parsedDate.Before(oldestDate) {
+		return errors.New("posting date does not fall within the financial year")
+	} else {
+		return nil
+	}
+}
+
+func CreateTransaction(tx *sql.Tx, userID, postingDate, contractID, remark string) (int64, error) {
+	err := validatePostingDate(postingDate)
+	if err != nil {
+		return 0, err
+	}
+
+	tid, err := mysequel.Insert(mysequel.Table{
+		TableName: "transaction",
+		Columns:   []string{"user_id", "datetime", "posting_date", "contract_id", "remark"},
+		Vals:      []interface{}{userID, time.Now().Format("2006-01-02 15:04:05"), postingDate, contractID, remark},
+		Tx:        tx,
+	})
+	if err != nil {
+		return 0, err
+	}
+
+	return tid, err
 }
 
 // IssueJournalEntries issues journal entries
@@ -139,6 +185,11 @@ func (m *AccountModel) PaymentVoucher(userID, postingDate, fromAccountID, amount
 		_ = tx.Commit()
 	}()
 
+	err = validatePostingDate(postingDate)
+	if err != nil {
+		return 0, err
+	}
+
 	var paymentVoucher []models.PaymentVoucherEntry
 	json.Unmarshal([]byte(entries), &paymentVoucher)
 
@@ -204,6 +255,11 @@ func (m *AccountModel) Deposit(userID, postingDate, toAccountID, amount, entries
 		_ = tx.Commit()
 	}()
 
+	err = validatePostingDate(postingDate)
+	if err != nil {
+		return 0, err
+	}
+
 	var paymentVoucher []models.PaymentVoucherEntry
 	json.Unmarshal([]byte(entries), &paymentVoucher)
 
@@ -268,6 +324,11 @@ func (m *AccountModel) JournalEntry(userID, postingDate, remark, entries string)
 		}
 		_ = tx.Commit()
 	}()
+
+	err = validatePostingDate(postingDate)
+	if err != nil {
+		return 0, err
+	}
 
 	var journalEntries []models.JournalEntry
 	json.Unmarshal([]byte(entries), &journalEntries)
