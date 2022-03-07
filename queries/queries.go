@@ -93,5 +93,5 @@ const BALANCE_SHEET_SUMMARY = `
 	WHERE COALESCE(AT.debit-AT.credit, 0) != 0
 	ORDER BY main_account, sub_account, account_category, name, balance DESC) AR
 	GROUP BY main_account, sub_account, account_category
-	ORDER BY FIELD(main_account, "Assets", "Liabilities", "Equity", "Expenses", "Revenue", "Other Revenue")
+	ORDER BY FIELD(main_account, "Assets", "Liabilities", "Equity", "Expenses", "Revenue", "Other Revenue"), sub_account, balance DESC
 `
