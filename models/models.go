@@ -96,12 +96,12 @@ type AccountBalanceForReports struct {
 	SubAccount      string  `json:"sub_account"`
 	AccountCategory string  `json:"account_category"`
 	AccountName     string  `json:"account_name"`
-	Balance         float64 `json:"amount"`
+	Amount          float64 `json:"amount"`
 }
 
 type BalanceSheetSummary struct {
 	MainAccount     string  `json:"main_account"`
 	SubAccount      string  `json:"sub_account"`
 	AccountCategory string  `json:"account_category"`
-	Balance         float64 `json:"amount"`
+	Amount          float64 `json:"amount"`
 }
