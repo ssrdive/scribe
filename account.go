@@ -171,6 +171,17 @@ func (m *AccountModel) AccountBalancesForReporting(postingDate string) ([]models
 	return res, nil
 }
 
+// BalanceSheetSummary returns account balances summarized for balance sheet
+func (m *AccountModel) BalanceSheetSummary(postingDate string) ([]models.BalanceSheetSummary, error) {
+	var res []models.BalanceSheetSummary
+	err := mysequel.QueryToStructs(&res, m.DB, queries.BALANCE_SHEET_SUMMARY, postingDate)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
 // ChartOfAccounts returns chart of accounts
 func (m *AccountModel) ChartOfAccounts() ([]models.ChartOfAccount, error) {
 	var res []models.ChartOfAccount
