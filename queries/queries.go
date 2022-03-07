@@ -71,3 +71,14 @@ const JOURNAL_ENTRIES_FOR_AUDIT = `
 	WHERE (? IS NULL OR DATE(T.datetime) = ?) AND (? IS NULL OR T.posting_date = ?)
 	ORDER BY T.datetime, AT.transaction_id, AT.type DESC, AT.amount ASC
 `
+
+const ACCOUNT_BALANCES_FOR_REPORTING = `
+	SELECT A.id, MA.name as main_account, SA.name as sub_account, AC.name as account_category, A.account_id, A.name, COALESCE(AT.debit-AT.credit, 0) AS balance 
+	FROM account A 
+	LEFT JOIN ( SELECT AT.account_id, SUM(CASE WHEN AT.type = "DR" THEN AT.amount ELSE 0 END) AS debit, SUM(CASE WHEN AT.type = "CR" THEN AT.amount ELSE 0 END) AS credit FROM (SELECT AT.* FROM account_transaction AT LEFT JOIN transaction T ON T.id = AT.transaction_id WHERE T.posting_date <= ?) AT GROUP BY AT.account_id ) AT ON AT.account_id = A.id 
+	LEFT JOIN account_category AC ON AC.id = A.account_category_id 
+	LEFT JOIN sub_account SA ON SA.id = AC.sub_account_id 
+	LEFT JOIN main_account MA ON MA.id = SA.main_account_id
+	WHERE COALESCE(AT.debit-AT.credit, 0) != 0
+	ORDER BY main_account, sub_account, account_category, name, balance DESC
+`

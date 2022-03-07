@@ -89,3 +89,12 @@ type JEsForAudit struct {
 	Amount        float64 `json:"amount"`
 	Remark        string  `json:"remark"`
 }
+
+type AccountBalanceForReports struct {
+	AccountID       int     `json:"account_id"`
+	MainAccount     string  `json:"main_account"`
+	SubAccount      string  `json:"sub_account"`
+	AccountCategory string  `json:"account_category"`
+	AccountName     string  `json:"account_name"`
+	Balance         float64 `json:"amount"`
+}

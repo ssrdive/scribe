@@ -160,6 +160,17 @@ func (m *AccountModel) TrialBalance() ([]models.TrialEntry, error) {
 	return res, nil
 }
 
+// AccountBalancesForReporting returns account balances with their categories
+func (m *AccountModel) AccountBalancesForReporting(postingDate string) ([]models.AccountBalanceForReports, error) {
+	var res []models.AccountBalanceForReports
+	err := mysequel.QueryToStructs(&res, m.DB, queries.ACCOUNT_BALANCES_FOR_REPORTING, postingDate)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
 // ChartOfAccounts returns chart of accounts
 func (m *AccountModel) ChartOfAccounts() ([]models.ChartOfAccount, error) {
 	var res []models.ChartOfAccount
