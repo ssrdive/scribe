@@ -105,3 +105,12 @@ type BalanceSheetSummary struct {
 	AccountCategory string  `json:"account_category"`
 	Amount          float64 `json:"amount"`
 }
+
+type AccountBalanceForPNL struct {
+	ID              int     `json:"id"`
+	MainAccount     string  `json:"main_account"`
+	SubAccount      string  `json:"sub_account"`
+	AccountCategory string  `json:"account_category"`
+	AccountName     string  `json:"account_name"`
+	Amount          float64 `json:"amount"`
+}

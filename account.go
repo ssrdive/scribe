@@ -182,6 +182,17 @@ func (m *AccountModel) BalanceSheetSummary(postingDate string) ([]models.Balance
 	return res, nil
 }
 
+// AccountsForPNL returns account balances summarized for profit and loss statement
+func (m *AccountModel) AccountsForPNL(startDate, endDate string) ([]models.AccountBalanceForPNL, error) {
+	var res []models.AccountBalanceForPNL
+	err := mysequel.QueryToStructs(&res, m.DB, queries.ACCOUNT_SUMMARIES_FOR_PNL, startDate, endDate)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
 // ChartOfAccounts returns chart of accounts
 func (m *AccountModel) ChartOfAccounts() ([]models.ChartOfAccount, error) {
 	var res []models.ChartOfAccount
