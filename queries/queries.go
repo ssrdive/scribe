@@ -106,5 +106,5 @@ const ACCOUNT_SUMMARIES_FOR_PNL = `
 	WHERE COALESCE(AT.debit-AT.credit, 0) != 0
 	ORDER BY main_account, sub_account, account_category, name, balance DESC) AR
 	WHERE main_account IN ("Expenses", "Revenue", "Other Revenue")
-	ORDER BY FIELD(main_account, "Expenses", "Revenue", "Other Revenue"), sub_account, account_category, balance DESC
+	ORDER BY FIELD(main_account, "Expenses", "Revenue", "Other Revenue"), sub_account, account_category, ABS(balance) DESC
 `
