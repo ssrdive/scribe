@@ -7,7 +7,7 @@ const TrialBalance = `
 		SELECT AT.account_id, SUM(CASE WHEN AT.type = "DR" THEN AT.amount ELSE 0 END) AS debit, SUM(CASE WHEN AT.type = "CR" THEN AT.amount ELSE 0 END) AS credit
 		FROM account_transaction AT
 		LEFT JOIN transaction T ON AT.transaction_id = T.id
-		WHERE T.posting_date <= '2022-10-17'
+		WHERE T.posting_date <= ?
 		GROUP BY AT.account_id
 	) AT ON AT.account_id = A.id
 	LEFT JOIN account_category AC on A.account_category_id = AC.id
@@ -22,7 +22,7 @@ const TrialBalance = `
 		SELECT AT.account_id, SUM(CASE WHEN AT.type = "DR" THEN AT.amount ELSE 0 END) AS debit, SUM(CASE WHEN AT.type = "CR" THEN AT.amount ELSE 0 END) AS credit
 		FROM account_transaction AT
 		LEFT JOIN transaction T ON AT.transaction_id = T.id
-		WHERE T.posting_date <= '2022-10-17'
+		WHERE T.posting_date <= ?
 		GROUP BY AT.account_id
 	) AT ON AT.account_id = A.id
 	LEFT JOIN account_category AC on A.account_category_id = AC.id
