@@ -1,14 +1,35 @@
 package queries
 
 const TrialBalance = `
-	SELECT A.id, A.account_id, A.name, COALESCE(AT.debit, 0) AS debit, COALESCE(AT.credit, 0) AS credit, COALESCE(AT.debit-AT.credit, 0) AS balance
+	SELECT * FROM ((SELECT A.id, MA.name AS main_account, SA.name AS sub_account, AC.name AS account_category, A.name AS account_name, COALESCE(AT.debit-AT.credit, 0) AS debit, 0 AS credit
 	FROM account A
 	LEFT JOIN (
-		SELECT AT.account_id, SUM(CASE WHEN AT.type = "DR" THEN AT.amount ELSE 0 END) AS debit, SUM(CASE WHEN AT.type = "CR" THEN AT.amount ELSE 0 END) AS credit 
+		SELECT AT.account_id, SUM(CASE WHEN AT.type = "DR" THEN AT.amount ELSE 0 END) AS debit, SUM(CASE WHEN AT.type = "CR" THEN AT.amount ELSE 0 END) AS credit
 		FROM account_transaction AT
+		LEFT JOIN transaction T ON AT.transaction_id = T.id
+		WHERE T.posting_date <= ?
 		GROUP BY AT.account_id
 	) AT ON AT.account_id = A.id
-	ORDER BY account_id ASC
+	LEFT JOIN account_category AC on A.account_category_id = AC.id
+	LEFT JOIN sub_account SA on AC.sub_account_id = SA.id
+	LEFT JOIN main_account MA ON SA.main_account_id = MA.id
+	WHERE MA.name IN ('Assets', 'Expenses', 'Cost of Sales')
+	ORDER BY main_account, sub_account, account_category ASC, debit DESC)
+	UNION
+	(SELECT A.id, MA.name AS main_account, SA.name AS sub_account, AC.name AS account_category, A.name AS account_name, 0 AS debit, COALESCE(AT.debit-AT.credit, 0) AS credit
+	FROM account A
+	LEFT JOIN (
+		SELECT AT.account_id, SUM(CASE WHEN AT.type = "DR" THEN AT.amount ELSE 0 END) AS debit, SUM(CASE WHEN AT.type = "CR" THEN AT.amount ELSE 0 END) AS credit
+		FROM account_transaction AT
+		LEFT JOIN transaction T ON AT.transaction_id = T.id
+		WHERE T.posting_date <= ?
+		GROUP BY AT.account_id
+	) AT ON AT.account_id = A.id
+	LEFT JOIN account_category AC on A.account_category_id = AC.id
+	LEFT JOIN sub_account SA on AC.sub_account_id = SA.id
+	LEFT JOIN main_account MA ON SA.main_account_id = MA.id
+	WHERE MA.name IN ('Equity', 'Liabilities', 'Revenue', 'Other Revenue')
+	ORDER BY main_account, sub_account, account_category, credit ASC)) T ORDER BY FIELD(main_account, "Assets", "Liabilities", "Equity", "Expenses", "Revenue", "Other Revenue"), sub_account, account_category
 `
 
 const ChartOfAccounts = `

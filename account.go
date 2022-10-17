@@ -150,9 +150,9 @@ func (m *AccountModel) CreateCategory(rParams, oParams []string, form url.Values
 }
 
 // TrialBalance returns trail balance
-func (m *AccountModel) TrialBalance() ([]models.TrialEntry, error) {
+func (m *AccountModel) TrialBalance(postingDate string) ([]models.TrialEntry, error) {
 	var res []models.TrialEntry
-	err := mysequel.QueryToStructs(&res, m.DB, queries.TrialBalance)
+	err := mysequel.QueryToStructs(&res, m.DB, queries.TrialBalance, postingDate, postingDate)
 	if err != nil {
 		return nil, err
 	}

@@ -12,12 +12,13 @@ type JournalEntry struct {
 }
 
 type TrialEntry struct {
-	ID          int     `json:"id"`
-	AccountID   int     `json:"account_id"`
-	AccountName string  `json:"account_name"`
-	Debit       float64 `json:"debit"`
-	Credit      float64 `json:"credit"`
-	Balance     float64 `json:"balance"`
+	ID              int     `json:"id"`
+	MainAccount     string  `json:"main_account"`
+	SubAccount      string  `json:"sub_account"`
+	AccountCategory string  `json:"account_category"`
+	AccountName     string  `json:"account_name"`
+	Debit           float64 `json:"debit"`
+	Credit          float64 `json:"credit"`
 }
 
 type ChartOfAccount struct {
