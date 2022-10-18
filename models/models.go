@@ -16,6 +16,7 @@ type TrialEntry struct {
 	MainAccount     string  `json:"main_account"`
 	SubAccount      string  `json:"sub_account"`
 	AccountCategory string  `json:"account_category"`
+	AccountID       string  `json:"account_id"`
 	AccountName     string  `json:"account_name"`
 	Debit           float64 `json:"debit"`
 	Credit          float64 `json:"credit"`

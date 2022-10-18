@@ -1,7 +1,7 @@
 package queries
 
 const TrialBalance = `
-	SELECT * FROM ((SELECT A.id, MA.name AS main_account, SA.name AS sub_account, AC.name AS account_category, A.name AS account_name, COALESCE(AT.debit-AT.credit, 0) AS debit, 0 AS credit
+	SELECT * FROM ((SELECT A.id, MA.name AS main_account, SA.name AS sub_account, AC.name AS account_category, A.account_id AS account_id, A.name AS account_name, COALESCE(AT.debit-AT.credit, 0) AS debit, 0 AS credit
 	FROM account A
 	LEFT JOIN (
 		SELECT AT.account_id, SUM(CASE WHEN AT.type = "DR" THEN AT.amount ELSE 0 END) AS debit, SUM(CASE WHEN AT.type = "CR" THEN AT.amount ELSE 0 END) AS credit
@@ -16,7 +16,7 @@ const TrialBalance = `
 	WHERE MA.name IN ('Assets', 'Expenses', 'Cost of Sales')
 	ORDER BY main_account, sub_account, account_category ASC, debit DESC)
 	UNION
-	(SELECT A.id, MA.name AS main_account, SA.name AS sub_account, AC.name AS account_category, A.name AS account_name, 0 AS debit, COALESCE(AT.credit-AT.debit, 0) AS credit
+	(SELECT A.id, MA.name AS main_account, SA.name AS sub_account, AC.name AS account_category, A.account_id AS account_id, A.name AS account_name, 0 AS debit, COALESCE(AT.credit-AT.debit, 0) AS credit
 	FROM account A
 	LEFT JOIN (
 		SELECT AT.account_id, SUM(CASE WHEN AT.type = "DR" THEN AT.amount ELSE 0 END) AS debit, SUM(CASE WHEN AT.type = "CR" THEN AT.amount ELSE 0 END) AS credit
