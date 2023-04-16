@@ -126,6 +126,6 @@ const AccountSummariesForPnl = `
 	LEFT JOIN main_account MA ON MA.id = SA.main_account_id
 	WHERE COALESCE(AT.debit-AT.credit, 0) != 0
 	ORDER BY main_account, sub_account, account_category, name, balance DESC) AR
-	WHERE main_account IN ("Expenses", "Revenue", "Other Revenue")
-	ORDER BY FIELD(main_account, "Expenses", "Revenue", "Other Revenue"), sub_account, account_category, ABS(balance) DESC
+	WHERE main_account IN ("Expenses", "Cost of Sales", "Revenue", "Other Revenue")
+	ORDER BY FIELD(main_account, "Expenses", "Cost of Sales", "Revenue", "Other Revenue"), sub_account, account_category, ABS(balance) DESC
 `
